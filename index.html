@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .ops-checklist-container {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #1a1a1a;
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .ops-checklist-container h1 {
+            color: #ffffff;
+            margin-bottom: 10px;
+            font-size: 28px;
+            margin-top: 0;
+        }
+        
+        .ops-checklist-container .subtitle {
+            color: #a0a0a0;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        
+        .ops-checklist-container .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .ops-checklist-container .field-label {
+            display: block;
+            color: #ffffff;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .ops-checklist-container input[type="text"],
+        .ops-checklist-container textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #404040;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+            background: #2a2a2a;
+            color: #ffffff;
+            box-sizing: border-box;
+        }
+        
+        .ops-checklist-container input[type="text"]:focus,
+        .ops-checklist-container textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .ops-checklist-container textarea {
+            resize: vertical;
+            min-height: 80px;
+            font-family: inherit;
+        }
+        
+        .ops-checklist-container .checklist {
+            margin: 30px 0;
+        }
+        
+        .ops-checklist-container .checklist-item {
+            background: #2a2a2a;
+            border: 2px solid #404040;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            transition: all 0.3s;
+        }
+        
+        .ops-checklist-container .checklist-item:hover {
+            border-color: #606060;
+        }
+        
+        .ops-checklist-container .item-checked {
+            background: #2a1a1a;
+            border-color: #FF1D00;
+        }
+        
+        .ops-checklist-container .checkbox-row {
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .ops-checklist-container input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            cursor: pointer;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        
+        .ops-checklist-container .checkbox-text {
+            flex: 1;
+            text-align: left;
+        }
+        
+        .ops-checklist-container .checkbox-title {
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 3px;
+            font-size: 15px;
+        }
+        
+        .ops-checklist-container .checkbox-description {
+            color: #a0a0a0;
+            font-size: 13px;
+        }
+        
+        .ops-checklist-container .submit-btn {
+            background: #071B5E;
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 20px;
+        }
+        
+        .ops-checklist-container .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(7, 27, 94, 0.4);
+        }
+        
+        .ops-checklist-container .submit-btn:active {
+            transform: translateY(0);
+        }
+        
+        .ops-checklist-container .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .ops-checklist-container .progress-bar {
+            background: #071B5E;
+            height: 8px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        
+        .ops-checklist-container .progress-fill {
+            background: #FF1D00;
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s;
+            border-radius: 10px;
+        }
+        
+        .ops-checklist-container .progress-text {
+            text-align: center;
+            color: #ffffff;
+            font-size: 14px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .ops-checklist-container #statusMessage {
+            margin-top: 15px;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="ops-checklist-container">
+        <h1>Operations Check-In</h1>
+        <p class="subtitle">Complete all items and submit to confirm setup</p>
+        
+        <form id="checklistForm">
+            <div class="form-group">
+                <label class="field-label" for="employeeName">Employee Name *</label>
+                <input type="text" id="employeeName" name="employeeName" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="field-label" for="eventLocation">Venue Location *</label>
+                <input type="text" id="eventLocation" name="eventLocation" required>
+            </div>
+            
+            <div class="progress-text">Progress: <span id="progressText">0/6</span> completed</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            
+            <div class="checklist">
+                <div class="checklist-item" id="item1">
+                    <div class="checkbox-row">
+                        <input type="checkbox" id="check1" name="task1" value="Unload to Setup Area">
+                        <div class="checkbox-text">
+                            <div class="checkbox-title">Unload to Setup Area</div>
+                            <div class="checkbox-description">Confirm the unload process and that equipment is moved to the setup area.</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="checklist-item" id="item2">
+                    <div class="checkbox-row">
+                        <input type="checkbox" id="check2" name="task2" value="Verify All Sports Equipment">
+                        <div class="checkbox-text">
+                            <div class="checkbox-title">Verify All Sports Equipment</div>
+                            <div class="checkbox-description">Ensure all sports equipment is accounted for and in good condition.</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="checklist-item" id="item3">
+                    <div class="checkbox-row">
+                        <input type="checkbox" id="check3" name="task3" value="Setup Bow Flag and Signage">
+                        <div class="checkbox-text">
+                            <div class="checkbox-title">Setup Bow Flag and Signage</div>
+                            <div class="checkbox-description">Set up bow flag and any signage required for the event.</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="checklist-item" id="item4">
+                    <div class="checkbox-row">
+                        <input type="checkbox" id="check4" name="task4" value="Review Notes and Complete Check In">
+                        <div class="checkbox-text">
+                            <div class="checkbox-title">Review Notes and Complete Check In</div>
+                            <div class="checkbox-description">Review event notes and complete and submit to portal.</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="checklist-item" id="item5">
+                    <div class="checkbox-row">
+                        <input type="checkbox" id="check5" name="task5" value="Confirm Staff Assignments">
+                        <div class="checkbox-text">
+                            <div class="checkbox-title">Confirm Staff Assignments</div>
+                            <div class="checkbox-description">Verify each staff member is clocked in and their daily tasks.</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="checklist-item" id="item6">
+                    <div class="checkbox-row">
+                        <input type="checkbox" id="check6" name="task6" value="Review Weather and Communicate with Home Office">
+                        <div class="checkbox-text">
+                            <div class="checkbox-title">Review Weather and Communicate with Home Office</div>
+                            <div class="checkbox-description">Check weather forecast and inform home office of any changes.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="field-label" for="additionalNotes">Additional Notes (Optional)</label>
+                <textarea id="additionalNotes" name="additionalNotes" placeholder="Any issues or special notes..."></textarea>
+            </div>
+            
+            <button type="submit" class="submit-btn">Submit Checklist</button>
+            <div id="statusMessage"></div>
+        </form>
+    </div>
+    
+    <script>
+        console.log('Script starting...');
+        
+        // Wait for everything to load
+        window.addEventListener('load', function() {
+            console.log('Window loaded');
+            
+            var totalTasks = 6;
+            
+            // Get all checkboxes
+            var check1 = document.getElementById('check1');
+            var check2 = document.getElementById('check2');
+            var check3 = document.getElementById('check3');
+            var check4 = document.getElementById('check4');
+            var check5 = document.getElementById('check5');
+            var check6 = document.getElementById('check6');
+            
+            console.log('Checkbox 1:', check1);
+            
+            // Get all items
+            var item1 = document.getElementById('item1');
+            var item2 = document.getElementById('item2');
+            var item3 = document.getElementById('item3');
+            var item4 = document.getElementById('item4');
+            var item5 = document.getElementById('item5');
+            var item6 = document.getElementById('item6');
+            
+            function updateProgress() {
+                console.log('Updating progress...');
+                var checkedCount = 0;
+                if (check1 && check1.checked) checkedCount++;
+                if (check2 && check2.checked) checkedCount++;
+                if (check3 && check3.checked) checkedCount++;
+                if (check4 && check4.checked) checkedCount++;
+                if (check5 && check5.checked) checkedCount++;
+                if (check6 && check6.checked) checkedCount++;
+                
+                console.log('Checked count:', checkedCount);
+                
+                var percentage = (checkedCount / totalTasks) * 100;
+                var progressFill = document.getElementById('progressFill');
+                var progressText = document.getElementById('progressText');
+                
+                if (progressFill) {
+                    progressFill.style.width = percentage + '%';
+                    console.log('Progress fill width set to:', percentage + '%');
+                }
+                if (progressText) {
+                    progressText.textContent = checkedCount + '/' + totalTasks;
+                    console.log('Progress text updated');
+                }
+            }
+            
+            function updateItem(checkbox, item) {
+                console.log('Update item called');
+                if (checkbox && checkbox.checked) {
+                    if (item) item.className = 'checklist-item item-checked';
+                } else {
+                    if (item) item.className = 'checklist-item';
+                }
+                updateProgress();
+            }
+            
+            // Add event listeners
+            if (check1) check1.onchange = function() { console.log('Check1 changed'); updateItem(check1, item1); };
+            if (check2) check2.onchange = function() { console.log('Check2 changed'); updateItem(check2, item2); };
+            if (check3) check3.onchange = function() { console.log('Check3 changed'); updateItem(check3, item3); };
+            if (check4) check4.onchange = function() { console.log('Check4 changed'); updateItem(check4, item4); };
+            if (check5) check5.onchange = function() { console.log('Check5 changed'); updateItem(check5, item5); };
+            if (check6) check6.onchange = function() { console.log('Check6 changed'); updateItem(check6, item6); };
+            
+            console.log('Event listeners added');
+            
+            // Form submission
+            var form = document.getElementById('checklistForm');
+            if (form) {
+                form.onsubmit = function(e) {
+                    e.preventDefault();
+                    
+                    var submitBtn = document.querySelector('.submit-btn');
+                    var statusMessage = document.getElementById('statusMessage');
+                    
+                    if (submitBtn) {
+                        submitBtn.disabled = true;
+                        submitBtn.textContent = 'Submitting...';
+                    }
+                    if (statusMessage) statusMessage.style.display = 'none';
+                    
+                    var employeeName = document.getElementById('employeeName').value;
+                    var eventLocation = document.getElementById('eventLocation').value;
+                    var additionalNotes = document.getElementById('additionalNotes').value;
+                    
+                    var checkedTasks = [];
+                    var uncheckedTasks = [];
+                    
+                    var allChecks = [check1, check2, check3, check4, check5, check6];
+                    for (var i = 0; i < allChecks.length; i++) {
+                        if (allChecks[i] && allChecks[i].checked) {
+                            checkedTasks.push(allChecks[i].value);
+                        } else if (allChecks[i]) {
+                            uncheckedTasks.push(allChecks[i].value);
+                        }
+                    }
+                    
+                    var currentDate = new Date().toLocaleString();
+                    
+                    var formData = new FormData();
+                    formData.append('employeeName', employeeName);
+                    formData.append('venueLocation', eventLocation);
+                    formData.append('submissionDate', currentDate);
+                    formData.append('completedTasks', checkedTasks.join(', '));
+                    formData.append('incompleteTasks', uncheckedTasks.join(', '));
+                    formData.append('completionRate', checkedTasks.length + '/' + totalTasks);
+                    formData.append('additionalNotes', additionalNotes);
+                    
+                    // Replace with your Google Apps Script Web App URL
+                    var scriptURL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
+                    
+                    fetch(scriptURL, {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(function(response) { return response.json(); })
+                    .then(function(data) {
+                        if (statusMessage) {
+                            statusMessage.textContent = '✓ Thank you! Your checklist has been submitted successfully!';
+                            statusMessage.style.color = '#4ade80';
+                            statusMessage.style.display = 'block';
+                            statusMessage.style.fontSize = '16px';
+                        }
+                        
+                        setTimeout(function() {
+                            if (form) form.reset();
+                            if (item1) item1.className = 'checklist-item';
+                            if (item2) item2.className = 'checklist-item';
+                            if (item3) item3.className = 'checklist-item';
+                            if (item4) item4.className = 'checklist-item';
+                            if (item5) item5.className = 'checklist-item';
+                            if (item6) item6.className = 'checklist-item';
+                            updateProgress();
+                            if (statusMessage) statusMessage.style.display = 'none';
+                        }, 3000);
+                    })
+                    .catch(function(error) {
+                        console.error('Error:', error);
+                        if (statusMessage) {
+                            statusMessage.textContent = '✗ Submission failed. Please try again.';
+                            statusMessage.style.color = '#FF1D00';
+                            statusMessage.style.display = 'block';
+                        }
+                    })
+                    .finally(function() {
+                        if (submitBtn) {
+                            submitBtn.disabled = false;
+                            submitBtn.textContent = 'Submit Checklist';
+                        }
+                    });
+                };
+            }
+            
+            // Initialize
+            updateProgress();
+            console.log('Initialization complete');
+        });
+    </script>
+</body>
+</html>
